@@ -122,7 +122,7 @@ enum InstructionType {NOPER=0,
 class Instruction {
 public:
     string          instrStr;
-    InstructionType iType;
+    InstructionType iType;  // Genre STPRM
     int             op1, op2, op3;
     string          iArg1,iArg2;
     int             numVal;
