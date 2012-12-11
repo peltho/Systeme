@@ -280,7 +280,7 @@ BaseCPU::BaseCPU(const string &id, ostream  &log, istream &consoleIn, ostream &c
 		 const int nGenReg, const int nProc) : pcReg(iPrs), cpuId(id), logStream(log),
 						       consoleOutputStream(consoleOut),
 						       consoleInputStream(consoleIn) {
-    genReg . resize(nGenReg);
+    genReg . resize(nGenReg); //initialisation de genReg ?
     proc   . resize(nProc);
     mem    . resize(nProc);
     qRun           = true;
