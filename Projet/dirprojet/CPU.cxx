@@ -219,7 +219,7 @@ void CPU::execute(const Instruction &instr) throw(CExc)
         mem[crtProc] . storeAt(genReg[instr . op1] . getVal() * wordSize, genReg[instr . op2] . getVal());
         logStream << cpuLog << prReg . getVal() << " " << instr 
               << " R" << instr . op2 << " = " << genReg[instr . op2] . getVal() 
-              << " to addr " << genReg[instr . op1] . getVal() << "\n"; 
+              << " to addr " << genReg[instr . op1] . getVal() << "\n";
         }
     }
         break;
@@ -251,12 +251,12 @@ void CPU::execute(const Instruction &instr) throw(CExc)
         const int frameStart(PROCPSWFRAMESTART);
         const int wordSize  (sizeof(int));
         spReg . setVal(mem[proc2ld] . loadFrom(frameStart));
-        pcReg . setVal(mem[proc2ld] . loadFrom(frameStart + wordSize));
+        pcReg . setVal(mem[proc2ld] . loadFrom(frameStart + wordSize));        //ProgramCounter 
         mdReg . setVal(mem[proc2ld] . loadFrom(frameStart + 2 * wordSize));
         for(unsigned int kReg(0); kReg < genReg . size(); kReg++) {
         genReg[kReg] . setVal(mem[proc2ld] . loadFrom(frameStart + (3 + kReg) * wordSize));
         }
-        prReg . setVal(proc2ld);
+        prReg . setVal(proc2ld);    //ProcessCounter (id du processus) <- proc2ld
         qInterruptible = true;
         dumpReg(logStream,true);
     }
