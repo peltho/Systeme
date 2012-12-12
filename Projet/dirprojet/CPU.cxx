@@ -371,17 +371,17 @@ void CPU::interrupt(const int interruptNumber, bool qCLINTInstr) throw(CExc) {
     const int wordSize  (sizeof(int));
     if(proc2stPSW) { // save PSW for regular processes only, not for kernel
     const int frameStart(PROCPSWFRAMESTART);
-    mem[proc2stPSW] . storeAt(frameStart,                spReg . getVal());
-    mem[proc2stPSW] . storeAt(frameStart + wordSize,     pcReg . getVal());
-    mem[proc2stPSW] . storeAt(frameStart + 2 * wordSize, mdReg . getVal());
-    for(unsigned int kReg(0); kReg < genReg . size(); kReg++) {
+    mem[proc2stPSW] . storeAt(frameStart,                spReg . getVal()); // On stocke la valeur du pointeur de pile
+    mem[proc2stPSW] . storeAt(frameStart + wordSize,     pcReg . getVal()); // ProgramCounter renvoie l'instruction executée
+    mem[proc2stPSW] . storeAt(frameStart + 2 * wordSize, mdReg . getVal()); // Stocke le mode d'exécution (user/kernel)
+    for(unsigned int kReg(0); kReg < genReg . size(); kReg++) {             // On stocke la valeur de tous les registres 
         mem[proc2stPSW] . storeAt(frameStart + (3 + kReg) * wordSize, genReg[kReg] . getVal());
     }
-    mem[KERNELPID] . storeAt(KERNELSAVECURRENTPROCID, prReg . getVal());
+    mem[KERNELPID] . storeAt(KERNELSAVECURRENTPROCID, prReg . getVal());    // ProcessCounter (id processus) stocké
     prReg . setVal(KERNELPID); // execute kernel code
     }
-    mdReg . switchToMaster();
-    pcReg . setVal(mem[KERNELPID] . loadFrom(interruptNumber * wordSize));
+    mdReg . switchToMaster();  // Passage au mode kernel
+    pcReg . setVal(mem[KERNELPID] . loadFrom(interruptNumber * wordSize));  // L'instruction <- processus.n° d'interruption
     dumpReg(logStream,true);
 }
 
