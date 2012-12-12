@@ -300,7 +300,7 @@ void BaseCPU::dumpReg(ostream &os, bool qRegAsWell) {
 	}
     }
     os << "\n";
-} 
+}
 
 void BaseCPU::execute(const Instruction &) throw(CExc) {
     throw CExc("BaseCPU::execute()"," should never be called.");

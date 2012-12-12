@@ -75,10 +75,10 @@ void CPU::execute(const Instruction &instr) throw(CExc)
         qInterruptible = true;
         logStream << cpuLog << prReg . getVal() << " " << instr << " qI = " << qInterruptible << "\n";
         break;
-        case    SETRI:
+    case    SETRI:
         genReg[instr . op1] . setVal(instr . numVal);
         logStream << cpuLog << prReg . getVal() << " " << instr 
-              << " R"   << instr . op1 << " = " << genReg[instr . op1] . getVal() << "\n"; 
+              << " R"   << instr . op1 << " = " << genReg[instr . op1] . getVal() << "\n";
         break;
     case    SETRG:
         genReg[instr . op1] . setVal(genReg[instr . op2] . getVal());
