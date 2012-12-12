@@ -216,7 +216,7 @@ void CPU::execute(const Instruction &instr) throw(CExc)
         }
         }
         if(qNormal) {
-        mem[crtProc] . storeAt(genReg[instr . op1] . getVal() * wordSize, genReg[instr . op2] . getVal());
+        mem[crtProc] . storeAt(genReg[instr . op1] . getVal() * wordSize, genReg[instr . op2] . getVal()); /*pour getval il doit convertir en octets*/
         logStream << cpuLog << prReg . getVal() << " " << instr 
               << " R" << instr . op2 << " = " << genReg[instr . op2] . getVal() 
               << " to addr " << genReg[instr . op1] . getVal() << "\n"; 
@@ -242,11 +242,11 @@ void CPU::execute(const Instruction &instr) throw(CExc)
     case    LDPSW: {
         logStream << cpuLog << prReg . getVal() << " " << instr << " ";
         if(mdReg . getVal() != 1) {
-        throw CExc("Illegally attempting to LDPSW"," when not in master mode.");
+            throw CExc("Illegally attempting to LDPSW"," when not in master mode.");
         }
         const unsigned int proc2ld   (genReg[instr . op1] . getVal());
         if(proc2ld > mem . size()) {
-        throw CExc("Too large proc value for LDPSW",proc2ld);
+            throw CExc("Too large proc value for LDPSW",proc2ld);
         }
         const int frameStart(PROCPSWFRAMESTART);
         const int wordSize  (sizeof(int));
