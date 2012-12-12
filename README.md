@@ -7,7 +7,11 @@ Team
 =======
 
 Thomas Gandolfi
+
 Nahel Kridallah
+
 Clément Martinez
+
 Thomas Pellegatta
+
 Nicolas Provansal
