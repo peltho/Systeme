@@ -1,17 +1,14 @@
-Systeme
+Système
 =======
 
 Projet de Système 2012
 
-Team
-=======
+<dl>
+  <dt>Team</dt>
+</dl>
 
-Thomas Gandolfi
-
-Nahel Kridallah
-
-Clément Martinez
-
-Thomas Pellegatta
-
-Nicolas Provansal
+* Thomas Gandolfi
+* Nahel Kridallah
+* Clément Martinez
+* Thomas Pellegatta
+* Nicolas Provansal
