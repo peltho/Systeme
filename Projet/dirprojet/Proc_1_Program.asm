@@ -10,7 +10,7 @@ ADDRG R3 R3 R2    ; advance the address
 STMEM R3 R0       ; store the V() operation code
 SETRI R5 10	  	  ; shared memory address (agreed upon with the other proc)
 SETRI R4 4	  	  ; int number for semop() request, that is int4
-SETRI R3 210	  ; waitLoop , set address for the P() semop
+SETRI R3 210	  ; waitLoop, set address for the P() semop
 CLINT R4	  	  ; P() the semaphore
 LDSHM R5 R6	  	  ; read the shared memory value
 SETRI R3 220	  ; set address for the V() semop
