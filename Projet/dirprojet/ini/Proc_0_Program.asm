@@ -91,7 +91,7 @@ LDPRM R1 R3 R8     ;LNR read the second component of the current semop from proc
 STMEM R5 R8        ;LNR store the second component of the current semop in kernel memory
 ADDRG R3 R3 R7     ;LNR advance R3 to the address of the first component of the next semop (if any) of the proc sem waitlists in proc memory
 SUBRG R2 R2 R7     ;LNR decrement the loop counter
-JNZRI R2 $semwcopy ;LNR loop back to continue copying until done
+JNZRI R2 $semwcopy ;LNR loop back to continue copying until done // boucle (l85-94) tant que R2 != 0
 SETRI R15 100      ;LNR done, so now preparing the start address of the semaphore vector (where we keep the semaphore state values)
 SETRI R13 0        ;LNR preparing for semoptest(0): we are first only testing
 SETRI R5 1         ;LNR the frame width for the subroutine call

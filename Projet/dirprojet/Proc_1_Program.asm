@@ -10,12 +10,12 @@ ADDRG R3 R3 R2    ; advance the address                                      // 
 STMEM R3 R0       ; store the V() operation code                             // mem[R3] <- R0 <- 0
 SETRI R5 10       ; shared memory address (agreed upon with the other proc)  // R5 <- 10
 SETRI R4 4        ; int number for semop() request, that is int4             // R4 <- 4
-SETRI R3 210      ; waitLoop, set address for the P() semop                  // R3 <- 210
-CLINT R4          ; P() the semaphore                                        // appel de l'int 4
+SETRI R3 210      ; waitLoop, set address for the P() semop      (loop start)// R3 <- 210
+CLINT R4          ; P() the semaphore                            (bloque)    // appel de l'int 4
 LDSHM R5 R6       ; read the shared memory value                             // R6 <- sharedMem[R5]
 SETRI R3 220      ; set address for the V() semop                            // R3 <- 200
-CLINT R4          ; V() the semaphore                                        // appel de l'int 4
-JZROI R6 -6       ; jump back to waitLoop(l13) if the value read from shmem is zero  //if(R6 == 0) { PC <- PC-6}
+CLINT R4          ; V() the semaphore                            (debloque)  // appel de l'int 4
+JZROI R6 -6       ; jump back to waitLoop(l13) if the value read from shmem is zero  //if(R6 == 0)
 SETRI R3 300      ; some address in process memory                           // R3 <- 300
 STMEM R3 R6       ; store the value read from shared memory at that address in proc mem // mem[R3] <- R6
 SETRI R4 380      ; some other address in process memory, for the "format"   // R4 <- 380
