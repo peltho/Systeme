@@ -15,7 +15,7 @@ CLINT R4          ; P() the semaphore                                        // 
 LDSHM R5 R6       ; read the shared memory value                             // R6 <- sharedMem[R5]
 SETRI R3 220      ; set address for the V() semop                            // R3 <- 200
 CLINT R4          ; V() the semaphore                                        // appel de l'int 4
-JZROI R6 -6       ; jump back to waitLoop if the value read from shmem is zero  //if(R6 == 0) { PC <- PC - 6 }
+JZROI R6 -6       ; jump back to waitLoop(l13) if the value read from shmem is zero  //if(R6 == 0) { PC <- PC-6}
 SETRI R3 300      ; some address in process memory                           // R3 <- 300
 STMEM R3 R6       ; store the value read from shared memory at that address in proc mem // mem[R3] <- R6
 SETRI R4 380      ; some other address in process memory, for the "format"   // R4 <- 380
