@@ -4,14 +4,14 @@
 #define KERNELSAVECURRENTPROCID     0
 #define KERNELPID                   0 
 #define PROCPSWFRAMESTART           0 
-#define SAMEPROCMAXINSTRTICKCHUNK   15 // 15 instructions max par processus
-#define SCHEDULENEXTPROCINTERRUPT   3
+#define SAMEPROCMAXINSTRTICKCHUNK   15 // 15 instructions consécutives max par processus
+#define SCHEDULENEXTPROCINTERRUPT   3  // int3
 #define MAXSPROCCOUNT               9  // 9 processus max
 #define MAXSEMAPHORECOUNT           9  // 9 sémaphores max
 #define SEMAPHOREVECTORSTART      100
-#define PROCSEMWAITLISTSTART      200
-#define PROCSEMWAITLISTSTARTELEMCNT 2  // 2 opérations sur les sémaphores (P() et V())
-#define CONSOLEINPUTOUTPUTTRIGGER 300 
+#define PROCSEMWAITLISTSTART      200 // ProcsemWaitList semops (à partir de 200, cb de semops (couple id sema (décalage par rapport à 100), op)
+#define PROCSEMWAITLISTSTARTELEMCNT 2
+#define CONSOLEINPUTOUTPUTTRIGGER 300
 
 class CPU : public BaseCPU {
 public:

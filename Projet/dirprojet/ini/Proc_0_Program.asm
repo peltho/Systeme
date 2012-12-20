@@ -120,6 +120,7 @@ SETRI R6 20        ;LNR offset to get the process slot address from the process 
 ADDRG R0 R1 R6     ;LNR R0 now contains the process slot address
 SETRI R5 1         ;LNR the readyToRun state
 STMEM R0 R5        ;LNR store the readyToRun state for the current process
+# Le processus courant est éligible (readyToRun)
 SETRI R7 301       ;LNR The address in kernel memory where we need to write the # of items for the consoleOut
 STMEM R7 R5        ;LNR just one item for now
 LDPRM R1 R3 R6     ;LNR R6 now contains the first item to be obtained (read) and thus sent to consoleOut (recall R3 is given to us by the proc)
@@ -138,9 +139,23 @@ JMBSI $int1        ;LNR we are done, so we make an absolute jump to $int1: to ke
 #-------- start of $int6 ----------------------------
 SETRI R0 0         ;LNR=$int6: consoleIn request for current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting the consoleIn operation
+SETRI R6 20        ;LNR offset to get the process slot address from the process id
+ADDRG R0 R1 R6     ;LNR R0 now contains the process slot address
+SETRI R5 1         ;LNR the readyToRun state
+STMEM R0 R5        ;LNR store the readyToRun state for the current process
 # ......
-SETRI R2 1         ;LNR R2 <- 1
-STMEM 300 R2       ;LNR ouverture ConsoleInput
+SETRI R7 301       ;LNR on stocke l'adresse 301 dans R7 qui correspond à nItems
+STMEM R7 R2        ;LNR on stocke le nombre d'items à R7
+LDPRM R1 R3 R6     ;LNR on charge le premier item dans R6
+SETRI R8 304       ;LNR on stocke l'adresse 304 dans R8 qui correspond à l'adresse du premier item
+STMEM R8 R6        ;LNR on stocke l'item à R8
+SETRI R7 302       ;LNR on stocke l'adresse 302 dans R7 qui correspond à destAddrStart
+SETRI R7 303       ;LNR on stocke l'adresse 303 dans R7 qui correspond à formatAddrStart
+STMEM R7 R3        ;LNR on stocke le type de l'item à R7
+
+SETRI R2 300       ;LNR R2 <- 300 pour CONSOLEINPUTOUTPUTTRIGGER
+SETRI R3 1         ;LNR R3 <- 1 pour input() donc saisie et pas output() qui correspond à la lecture
+STMEM R2 R3        ;LNR ouverture ConsoleInOut.input() écriture
 # ......
 #======== start of initial kernel setup =============
 SETRI R0 1         ;LNR=$prep: initial kernel setup, R0 constant increment/decrement value

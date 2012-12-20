@@ -5,7 +5,8 @@ Les deux instructions permettent de réserver la mémoire d'un processus.
 STMEM seulement pour le processus courant (utilisable en mode utilisateur)
 Avec STPRM on peut réserver la mémoire de n'importe quel processus (à utiliser en mode maître)
 LDPSW : il suffit pour le noayu, de faire ldpsw d'un proc P,
-pour se brancher sur le code de P ; car cette instruction permet de charger l'état du processus quand il a été arrêté dans le cadre d'un changement de contexte notamment.
+pour se brancher sur le code de P ; car cette instruction permet de charger l'état du processus quand il a été arrêté,
+dans le cadre d'un changement de contexte notamment.
 
 Question 2b
 ===========
@@ -24,7 +25,8 @@ Question 2c
 ===========
 
 Chaque processus contient divers registres tels que spReg, pcReg, mdReg, prReg qui sont stockés dans la mémoire.
-Ces registres sont stockés à différents endroits de la mémoire selon que l'opération effectuée sur le processus soit le chargement de celui-ci, ou bien sa sauvegarde dans la tranche mémoire du noyau.
+Ces registres sont stockés à différents endroits de la mémoire selon que l'opération effectuée sur le processus soit le chargement de celui-ci,
+ou bien sa sauvegarde dans la tranche mémoire du noyau.
 
 Question 2d
 ===========
@@ -38,7 +40,9 @@ Question 2e
 ===========
 
 La tranche mémoire du noyau contient plusieurs adresses, notamment KERNELSAVECURRENTPROCID qui contient l'adresse du processus courant sauvegardé.
-Il y a également le vecteur d'interruptions, les tables d'état des processus et le vecteur d'adresses de début des vecteurs de requêtes de semop par processsus.
+Il y a également le vecteur d'interruptions, les tables d'état des processus
+et le vecteur d'adresses de début des vecteurs de requêtes de semop par processsus.
+Y sont également stockés les items (leur type, nombre, etc.) // à développer
 
 Question 2f
 ===========
