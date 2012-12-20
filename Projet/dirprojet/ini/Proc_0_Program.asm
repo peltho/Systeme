@@ -136,8 +136,11 @@ SETRI R7 300       ;LNR The address in kernel memory where, by writing a value o
 STMEM R7 R5        ;LNR there we go -- we just requested a "hardware consoleOut" through "memory-mapping IO"
 JMBSI $int1        ;LNR we are done, so we make an absolute jump to $int1: to keep going , @@end of interrupt #5@@
 #-------- start of $int6 ----------------------------
-SETRI R0 0         ;LNR=$int6: consoleIn request for current process  , the address where its pid is stored
+SETRI R0 0         ;LNR=$int6: consoleIn request for current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting the consoleIn operation
+# ......
+SETRI R2 1         ;LNR R2 <- 1
+STMEM 300 R2       ;LNR ouverture ConsoleInput
 # ......
 #======== start of initial kernel setup =============
 SETRI R0 1         ;LNR=$prep: initial kernel setup, R0 constant increment/decrement value

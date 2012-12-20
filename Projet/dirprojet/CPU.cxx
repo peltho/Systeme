@@ -377,7 +377,7 @@ void CPU::interrupt(const int interruptNumber, bool qCLINTInstr) throw(CExc) {
     for(unsigned int kReg(0); kReg < genReg . size(); kReg++) {             // On stocke la valeur de tous les registres 
         mem[proc2stPSW] . storeAt(frameStart + (3 + kReg) * wordSize, genReg[kReg] . getVal());
     }
-    mem[KERNELPID] . storeAt(KERNELSAVECURRENTPROCID, prReg . getVal());    // ProcessCounter (id processus) stocké
+    mem[KERNELPID] . storeAt(KERNELSAVECURRENTPROCID, prReg . getVal());    // ProcessCounter (id processus) stocké ds la RAM du noyau
     prReg . setVal(KERNELPID); // execute kernel code
     }
     mdReg . switchToMaster();  												// Passage au mode kernel
