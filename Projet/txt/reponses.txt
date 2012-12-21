@@ -54,6 +54,7 @@ Question 3b
 ===========
 
 300 0 1 304 404 65 0 0 0 0 0 // Ligne 4743 de log.txt (correspond à int5)
+400 0 0 0 0 1 0 0 0 0 0 // La valeur 1 est à @404 et correspond au type de l'item (0:int ou 1:char)
 
 Explications :
 --------------
