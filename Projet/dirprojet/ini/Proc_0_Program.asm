@@ -145,13 +145,15 @@ SETRI R5 1         ;LNR the readyToRun state
 STMEM R0 R5        ;LNR store the readyToRun state for the current process
 # ......
 SETRI R7 301       ;LNR on stocke l'adresse 301 dans R7 qui correspond à nItems
-STMEM R7 R2        ;LNR on stocke le nombre d'items à R7
-LDPRM R1 R3 R6     ;LNR on charge le premier item dans R6
-SETRI R8 304       ;LNR on stocke l'adresse 304 dans R8 qui correspond à l'adresse du premier item
-STMEM R8 R6        ;LNR on stocke l'item à R8
+STMEM R7 R2        ;LNR on stocke le nombre d'items à R7 (il faudrait peut-être n'en stocker qu'un seul, comme ds int5 + boucle)
 SETRI R7 302       ;LNR on stocke l'adresse 302 dans R7 qui correspond à destAddrStart
+LDPRM R1 R4 R7     ;LNR on charge le type du premier item dans R7
 SETRI R7 303       ;LNR on stocke l'adresse 303 dans R7 qui correspond à formatAddrStart
 STMEM R7 R3        ;LNR on stocke le type de l'item à R7
+
+SETRI R8 304       ;LNR on stocke l'adresse 304 dans R8 qui correspond à l'adresse du premier item
+LDPRM R1 R3 R6     ;LNR on charge le premier item dans R6
+STMEM R8 R6        ;LNR on stocke l'item à R8
 
 SETRI R2 300       ;LNR R2 <- 300 pour CONSOLEINPUTOUTPUTTRIGGER
 SETRI R3 1         ;LNR R3 <- 1 pour input() donc saisie et pas output() qui correspond à la lecture
