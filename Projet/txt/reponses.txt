@@ -44,6 +44,18 @@ Il y a également le vecteur d'interruptions, les tables d'état des processus
 et le vecteur d'adresses de début des vecteurs de requêtes de semop par processsus.
 Y sont également stockés les items (leur type, nombre, etc.) // à développer
 
+300 0 1 304 404 65 0 0 0 0 0 // Ligne 4743 de log.txt (correspond à int5)
+
+Explications :
+--------------
+
+300 : @ ds la mémoire du noyau
+0   : valeur (input ou output)
+1   : nombre d'items
+304 : @ de l'item
+404 : @ du type de l'item
+65  : valeur ASCII de l'item qui est un char
+
 Question 2f
 ===========
 

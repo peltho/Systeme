@@ -155,7 +155,7 @@ SETRI R8 304       ;LNR on stocke l'adresse 304 dans R8 qui correspond à l'adre
 LDPRM R1 R3 R6     ;LNR on charge le premier item dans R6
 STMEM R8 R6        ;LNR on stocke l'item à R8
 
-SETRI R2 300       ;LNR R2 <- 300 pour CONSOLEINPUTOUTPUTTRIGGER
+SETRI R2 300       ;LNR R2 <- 300 pour passer à CONSOLEINPUTOUTPUTTRIGGER
 SETRI R3 1         ;LNR R3 <- 1 pour input() donc saisie et pas output() qui correspond à la lecture
 STMEM R2 R3        ;LNR ouverture ConsoleInOut.input() écriture
 # ......
