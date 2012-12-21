@@ -216,7 +216,7 @@ void CPU::execute(const Instruction &instr) throw(CExc)
         }
         }
         if(qNormal) {
-        mem[crtProc] . storeAt(genReg[instr . op1] . getVal() * wordSize, genReg[instr . op2] . getVal()); /*pour getval il doit convertir en octets*/
+        mem[crtProc] . storeAt(genReg[instr . op1] . getVal() * wordSize, genReg[instr . op2] . getVal()); // on stocke op2 à l'@op1
         logStream << cpuLog << prReg . getVal() << " " << instr 
               << " R" << instr . op2 << " = " << genReg[instr . op2] . getVal() 
               << " to addr " << genReg[instr . op1] . getVal() << "\n";
@@ -286,7 +286,7 @@ void CPU::execute(const Instruction &instr) throw(CExc)
               << " R" << instr . op3 << " = " << genReg[instr . op3] . getVal() 
               << " from addr " << genReg[instr . op2] . getVal() 
               << " of proc "   << genReg[instr . op1] . getVal() 
-              << "\n"; 
+              << "\n"; // On charge op2 du processus op1 dans op3
     }
         break;
     case    STPRM:{

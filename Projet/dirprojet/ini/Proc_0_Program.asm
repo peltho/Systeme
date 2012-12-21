@@ -114,7 +114,7 @@ LDPSW R0           ;LNR go on to execute proc of id R0  , @@end of interrupt #4@
 # R2 contains the number of items to write
 # R3 contains the start address in process memory where to read the items one by one
 # R4 contains the start address in process memory where to read the item types one by one (0 for int, 1 for char)
-SETRI R0 0         ;LNR=$int5: consoleOut request for current process  , the address where its pid is stored
+SETRI R0 0         ;LNR=$int5: consoleOut request for current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting the consoleOut operation
 SETRI R6 20        ;LNR offset to get the process slot address from the process id
 ADDRG R0 R1 R6     ;LNR R0 now contains the process slot address

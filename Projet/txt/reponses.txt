@@ -44,20 +44,40 @@ Il y a également le vecteur d'interruptions, les tables d'état des processus
 et le vecteur d'adresses de début des vecteurs de requêtes de semop par processsus.
 Y sont également stockés les items (leur type, nombre, etc.) // à développer
 
+Question 2f
+===========
+
+9 processus maximum
+9 semops
+
+Question 3b
+===========
+
 300 0 1 304 404 65 0 0 0 0 0 // Ligne 4743 de log.txt (correspond à int5)
 
 Explications :
 --------------
 
 300 : @ ds la mémoire du noyau
-0   : valeur (input ou output)
-1   : nombre d'items
-304 : @ de l'item
-404 : @ du type de l'item
-65  : valeur ASCII de l'item qui est un char
+0   : valeur (input ou output)                  // @300
+1   : nombre d'items                            // @301
+304 : @ de l'item                               // @302
+404 : @ du type de l'item                       // @303
+65  : valeur ASCII de l'item qui est un char    // @304
 
-Question 2f
-===========
+Explication d'int5
 
-9 processus maximum
-9 semops
+SETRI R7 301       ; on stocke la valeur 301 (qui sera une @) dans R7
+STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@301
+LDPRM R1 R3 R6     ; on charge R3 (@ du premier item) du processus R1 dans R6
+SETRI R8 304       ; on stocke la valeur 304 (qui sera une @) dans R8
+STMEM R8 R6        ; on stocke la valeur de l'item à R6, donc à l'@304
+SETRI R7 302       ; on stocke la valeur 302 (qui sera une @) dans R7
+STMEM R7 R8        ; on stocke la valeur 304 à R7, donc à l'@302
+LDPRM R1 R4 R7     ; on charge R4 (@ du type de l'item) du processus R1 pour récupérer la valeur du type (0:int/1:char) qu'on stocke dans R7
+SETRI R8 404       ; on stocke la valeur 404 (qui sera une @) dans R8 (qui contenait la valeur '304')
+STMEM R8 R7        ; on stocke le type de l'item à R8, donc à l'@404
+SETRI R7 303       ; on stocke la valeur 303 (qui sera une @) dans R7
+STMEM R7 R8        ; on stocke le type de l'item à R7, donc à l'@303
+SETRI R7 300       ; on stocke la valeur 300 (qui sera une @) dans R7
+STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@300 ce qui déclenche une écriture
