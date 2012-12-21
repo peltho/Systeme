@@ -11,15 +11,13 @@ dans le cadre d'un changement de contexte notamment.
 Question 2b
 ===========
 
-- Le pid du processus <- 0 = exit
-- Charge R0 dans R1 qui contient le PID du processus
-- Récupère l'adresse du processus (le stocke dans R2)
-- R0 vaut l'adresse du processus
-- R3 prend pour valeur l'état du processus (à savoir 0)
-- Stocke dans R0 l'état du processus
-- Retourne à int1 / changement de processus
-
-Par le terme de processus on désigne le processus courant.
+SETRI R0 0         ; stocke la valeur 0 dans R0
+LDMEM R0 R1        ; charge R0 dans R1 pour obtenir le PID du processus à arreter
+SETRI R2 20        ; stocke la valeur 20 dans R2
+ADDRG R0 R1 R2     ; stocke R1 + R2 (0 + 20) dans R0 pour obtenir l'@ du processus
+SETRI R3 0         ; stocke la valeur 0 dans R3, qui correspondra à son état
+STMEM R0 R3        ; stocke 0 à R0, donc à l'@ du processus, ce qui a pour effet de le terminer
+JMBSI $int1        ; on retourne à int1 pour élire un nouveau processus
 
 Question 2c
 ===========
@@ -54,13 +52,13 @@ Question 3b
 ===========
 
 300 0 1 304 404 65 0 0 0 0 0 // Ligne 4743 de log.txt (correspond à int5)
-400 0 0 0 0 1 0 0 0 0 0 // La valeur 1 est à @404 et correspond au type de l'item (0:int ou 1:char)
+400 0 0 0 0 1 0 0 0 0 0      // La valeur 1 est à @404 et correspond au type de l'item (0:int ou 1:char)
 
 Explications :
 --------------
 
 300 : @ ds la mémoire du noyau
-0   : valeur (input ou output)                  // @300
+0   : valeur (input ou ->output)                // @300
 1   : nombre d'items                            // @301
 304 : @ de l'item                               // @302
 404 : @ du type de l'item                       // @303
@@ -81,4 +79,17 @@ STMEM R8 R7        ; on stocke le type de l'item à R8, donc à l'@404
 SETRI R7 303       ; on stocke la valeur 303 (qui sera une @) dans R7
 STMEM R7 R8        ; on stocke le type de l'item à R7, donc à l'@303
 SETRI R7 300       ; on stocke la valeur 300 (qui sera une @) dans R7
-STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@300 ce qui déclenche une écriture
+STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@300 ce qui déclenche un consoleInOut.output()
+
+Ecriture d'int6
+
+# ...
+SETRI R9 0         ; on stocke la valeur 0 (qui déclenchera input()) dans R
+# ...
+SETRI R7 301       ; on stocke la valeur 301 (qui sera une @) dans R7
+STMEM R7 R9        ; on stocke la valeur 1 à R7, donc à l'@301
+
+# ...              ; Faut-il garder la même chose que fait précédemment dans int5 au même endroit ?
+
+SETRI R7 300       ; on stocke la valeur 300 (qui sera une @) dans R7
+STMEM R7 R9        ; on stocke la valeur 0 à R7, donc à l'@300 ce qui déclenche un consoleInOut.input()

@@ -53,7 +53,7 @@ SETRI R1 0         ;LNR address where the current proc id is stored
 STMEM R1 R0        ;LNR store the (newly become) current proc id
 LDPSW R0           ;LNR go on to execute proc of id R0    , @@end of interrupt #1@@
 #-------- start of $int2 ----------------------------
-SETRI R0 0         ;LNR=$int2: exit current process    , the address where its pid is stored
+SETRI R0 0         ;LNR=$int2: exit current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which is now exiting
 SETRI R2 20        ;LNR offset to get the process slot address from the process id
 ADDRG R0 R1 R2     ;LNR R0 now contains the process slot address
@@ -61,7 +61,7 @@ SETRI R3 0         ;LNR the exited process state value
 STMEM R0 R3        ;LNR set the state of the process to exit
 JMBSI $int1        ;LNR absolute jump to $int1: to keep going    , @@end of interrupt #2@@
 #-------- start of $int3 ----------------------------
-SETRI R0 0         ;LNR=$int3: scheduler interrupt, the current process , the address where its pid is stored
+SETRI R0 0         ;LNR=$int3: scheduler interrupt, the current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which was just interrupted
 SETRI R2 20        ;LNR offset to get the process slot address from the process id
 ADDRG R0 R1 R2     ;LNR R0 now contains the process slot address
@@ -71,7 +71,7 @@ JMBSI $int1        ;LNR absolute jump to $int1: to keep going    , @@end of inte
 #-------- start of $int4 ----------------------------
 # R2 contains the number of semop entries
 # R3 contains the start address in process memory for the semop list ((semId,semOp),(semId,semOp),...)
-SETRI R0 0         ;LNR=$int4: semop request for current process  , the address where its pid is stored
+SETRI R0 0         ;LNR=$int4: semop request for current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting a semop
 SETRI R4 20        ;LNR offset to get the process slot address from the process id
 ADDRG R0 R1 R4     ;LNR R0 now contains the process slot address
