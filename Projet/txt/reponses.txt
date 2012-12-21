@@ -48,24 +48,35 @@ Question 2f
 9 processus maximum
 9 semops
 
-Question 3b
+Questions 3
 ===========
 
-300 0 1 304 404 65 0 0 0 0 0 // Ligne 4743 de log.txt (correspond à int5)
-400 0 0 0 0 1 0 0 0 0 0      // La valeur 1 est à @404 et correspond au type de l'item (0:int ou 1:char)
+Explication d'int5
+------------------
 
-Explications :
---------------
+###############
+### log.txt ###
+###############
+
+300 0 1 304 404 65 0 0 0 0 0 // Ligne 4743 de log.txt
+400 0 0 0 0 1 0 0 0 0 0      // La valeur 1 est à @404 et correspond au type de l'item (0:int ou 1:char)
 
 300 : @ ds la mémoire du noyau
 0   : valeur (input ou ->output)                // @300
 1   : nombre d'items                            // @301
-304 : @ de l'item                               // @302
-404 : @ du type de l'item                       // @303
+304 : @ de l'item                               // @302 \ Contiennent une valeur
+404 : @ du type de l'item                       // @303 / correspondant à une @
 65  : valeur ASCII de l'item qui est un char    // @304
 
-Explication d'int5
+##########################
+### Proc_0_Program.asm ###
+##########################
 
+# R2 : nombre d'items
+# R3 : @ du premier item
+# R4 : @ du type pour un item
+
+#...
 SETRI R7 301       ; on stocke la valeur 301 (qui sera une @) dans R7
 STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@301
 LDPRM R1 R3 R6     ; on charge R3 (@ du premier item) du processus R1 dans R6
@@ -80,12 +91,17 @@ SETRI R7 303       ; on stocke la valeur 303 (qui sera une @) dans R7
 STMEM R7 R8        ; on stocke le type de l'item à R7, donc à l'@303
 SETRI R7 300       ; on stocke la valeur 300 (qui sera une @) dans R7
 STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@300 ce qui déclenche un consoleInOut.output()
+JMBSI $int1        ; on retourne à int1
+
+
+Question 3b
+===========
 
 Ecriture d'int6
+---------------
 
 # ...
 SETRI R9 0         ; on stocke la valeur 0 (qui déclenchera input()) dans R
-# ...
 SETRI R7 301       ; on stocke la valeur 301 (qui sera une @) dans R7
 STMEM R7 R9        ; on stocke la valeur 1 à R7, donc à l'@301
 
@@ -93,3 +109,4 @@ STMEM R7 R9        ; on stocke la valeur 1 à R7, donc à l'@301
 
 SETRI R7 300       ; on stocke la valeur 300 (qui sera une @) dans R7
 STMEM R7 R9        ; on stocke la valeur 0 à R7, donc à l'@300 ce qui déclenche un consoleInOut.input()
+JMBSI $int1        ; on retourne à int1
