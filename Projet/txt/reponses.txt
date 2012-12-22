@@ -92,7 +92,7 @@ STMEM R8 R7        ; on stocke le type de l'item à R8, donc à l'@404
 SETRI R7 303       ; on stocke la valeur 303 (qui sera une @) dans R7
 STMEM R7 R8        ; on stocke le type de l'item à R7, donc à l'@303
 SETRI R7 300       ; on stocke la valeur 300 (qui sera une @) dans R7
-STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@300 ce qui déclenche un consoleInOut.output()
+STMEM R7 R5        ; on stocke la valeur 1 à R7, donc à l'@300 ce qui déclenche un consoleInOut.output() // ce qui est curieux car on a 0 à @300
 JMBSI $int1        ; on retourne à int1
 
 Question 3a
@@ -108,8 +108,6 @@ Ecriture d'int6
 
 # ...
 SETRI R9 0         ; on stocke la valeur 0 (qui déclenchera input()) dans R
-SETRI R7 301       ; on stocke la valeur 301 (qui sera une @) dans R7
-STMEM R7 R9        ; on stocke la valeur 1 à R7, donc à l'@301
 
 # ...              ; Faut-il garder la même chose que fait précédemment dans int5 au même endroit ? À priori, oui.
 
