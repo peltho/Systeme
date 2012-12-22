@@ -44,12 +44,12 @@ CLINT R9          ; kernel int2 exits the process                            // 
 # SETRI R4 4        ; on stocke la valeur 4 dans R4, correspond à int4
 # SETRI R3 210      ; on stocke la valeur 210 (qui sera une @, pour la semop P()) dans R3
 # CLINT R4          ; on appelle int4, donc P()
-# LDSHM R5 R6       ; on stocke la valeur de la mémoire partagée dans R6, donc R6=valeur de @10 -> 0
+# LDSHM R5 R6       ; on stocke la valeur de la mémoire partagée dans R6
 # SETRI R3 220      ; on stocke la valeur 220 (qui sera une @, pour la semop V()) dans R3
 # CLINT R4          ; on appelle int4 à nouveau, donc V()
 # JZROI R6 -6       ; si R6=0, alors on boucle à la ligne 45 (pour pouvoir rentrer à nouveau en zone critique) le -6, signifie retour de 6 lignes en arrière, cette ligne incluse.
 # SETRI R3 300      ; on stocke la valeur 300 (qui sera une @, CONSOLEI/OTRIGGER) dans R3
-# STMEM R3 R6       ; on stocke la valeur 10 à R3, donc à l'@300
+# STMEM R3 R6       ; on stocke la valeur de la mémoire partagée à R3, donc à l'@300
 # SETRI R4 380      ; on stocke la valeur 380 (qui sera une @) dans R4
 # SETRI R1 1        ; on stocke la valeur 1 dans R1, correspond au type de l'item (char en l'occurrence)
 # STMEM R4 R1       ; on stocke la valeur 1 à R4, donc le type à l'@380
