@@ -3,7 +3,7 @@ Système
 
 Projet de Système 2012
 
-L'énoncé est disponible dans Projet/txt
+L'énoncé et les réponses sont disponibles dans Projet/txt
 
 <dl>
   <dt>Team</dt>
