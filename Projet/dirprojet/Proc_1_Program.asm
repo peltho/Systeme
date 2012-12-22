@@ -44,7 +44,7 @@ CLINT R9          ; kernel int2 exits the process                            // 
 # SETRI R4 4        ; on stocke la valeur 4 dans R4, correspond à int4
 # SETRI R3 210      ; on stocke la valeur 210 (qui sera une @, pour la semop P()) dans R3
 # CLINT R4          ; on appelle int4, donc P()
-# LDSHM R5 R6       ; on stocke la valeur de la mémoire partagée dans R6
+# LDSHM R5 R6       ; on charge la valeur de la mémoire partagée dans R6
 # SETRI R3 220      ; on stocke la valeur 220 (qui sera une @, pour la semop V()) dans R3
 # CLINT R4          ; on appelle int4 à nouveau, donc V()
 # JZROI R6 -6       ; si R6=0, alors on boucle à la ligne 45 (pour pouvoir rentrer à nouveau en zone critique) le -6, signifie retour de 6 lignes en arrière, cette ligne incluse.
