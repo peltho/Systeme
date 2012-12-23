@@ -24,19 +24,19 @@ CLINT R9          ; kernel int2 exits the process                             //
 # SETRI R0 0        ; on récupère la sémaphore
 # SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond à la fois au code de P() et au nombre de semops
 # SETRI R3 215      ; on stocke la valeur 215 (qui sera une @) dans R3
-# STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@215
+# STMEM R3 R0       ; on stocke la valeur 0 (index de la semaphore) à R3, donc à l'@215
 # ADDRG R3 R3 R2    ; R3 contient l'@215+1, donc l'@216
-# STMEM R3 R2       ; on stocke la valeur 1 à R3, donc à l'@216
+# STMEM R3 R2       ; on stocke la valeur 1 (code de P()) à R3, donc à l'@216
 # SETRI R3 225      ; on stocke la valeur 225 (qui sera une @) dans R3
-# STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@225
+# STMEM R3 R0       ; on stocke la valeur 0 (index de la semaphore) à R3, donc à l'@225
 # ADDRG R3 R3 R2    ; R3 contient l'@225+1, donc l'@226
-# STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@226
-# SETRI R5 10       ; on stocke la valeur 10 dans R5, correspond à l'@ de la mémoire partagée
+# STMEM R3 R0       ; on stocke la valeur 0 (code de V()) à R3, donc à l'@226
+# SETRI R5 10       ; on stocke la valeur 10 (qui sera une @) dans R5, correspond à l'@ de la mémoire partagée
 # SETRI R4 4        ; on stocke la valeur 4 dans R4, correspond à l'int4
 # SETRI R6 65       ; on stocke la valeur 65 dans R6, correspond à la valeur à écrire dans la mémoire partagée
 # SETRI R3 215      ; on stocke la valeur 215 (qui sera une @, celle de P()) dans R3
 # CLINT R4          ; on appelle int4, donc P()
-# STSHM R5 R6       ; on stocke la valeur 65 à R5, donc à l'@10 de la mémoire partagée    ## <- intervention mémoire partagée (stockage)##
+# STSHM R5 R6       ; on stocke la valeur 65 à R5, donc à l'@10 de la mémoire partagée    ## <- intervention mémoire partagée (stockage) ##
 # SETRI R3 225      ; on stocke la valeur 225 (qui sera une @, celle de V()) dans R3
 # CLINT R4          ; on appelle int4 à nouveau, donc V()
 # SETRI R9 2        ; on stocke la valeur 2 dans R9, correspond à int2

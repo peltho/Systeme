@@ -164,6 +164,96 @@ Pour répondre à la question, il faut donc :
     -> Ecrire les valeurs de 1 à 10 (de @11 à @20) dans la mémoire partagée via Proc_2_Program.asm
     -> Les lire en écrivant un nombre à la fois dans la zone critique via Proc_1_Program.asm
 
+##############
+# Producteur #
+##############
+
+SETRI R0 0        ; on récupère la sémaphore
+SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond à la fois au code de P() et au nombre de semops
+SETRI R3 215      ; on stocke la valeur 215 (qui sera une @) dans R3
+STMEM R3 R0       ; on stocke la valeur 0 (index de la semaphore) à R3, donc à l'@215
+ADDRG R3 R3 R2    ; R3 contient l'@215+1, donc l'@216
+STMEM R3 R2       ; on stocke la valeur 1 (code de P()) à R3, donc à l'@216
+SETRI R3 225      ; on stocke la valeur 225 (qui sera une @) dans R3
+STMEM R3 R0       ; on stocke la valeur 0 (index de la semaphore) à R3, donc à l'@225
+ADDRG R3 R3 R2    ; R3 contient l'@225+1, donc l'@226
+STMEM R3 R0       ; on stocke la valeur 0 (code de V()) à R3, donc à l'@226
+
+# Début zone intéressante #
+
+SETRI R5 10       ; on stocke la valeur 10 (qui sera une @) dans R5, correspond à l'@ de la mémoire partagée
+SETRI R4 4        ; on stocke la valeur 4 dans R4, correspond à l'int4
+SETRI R6 65       ; on stocke la valeur 65 dans R6, correspond à la valeur à écrire dans la mémoire partagée
+SETRI R3 215      ; on stocke la valeur 215 (qui sera une @, celle de P()) dans R3
+CLINT R4          ; on appelle int4, donc P()
+STSHM R5 R6       ; on stocke la valeur 65 à R5, donc à l'@10 de la mémoire partagée    ## <- intervention mémoire partagée (stockage) ##
+SETRI R3 225      ; on stocke la valeur 225 (qui sera une @, celle de V()) dans R3
+CLINT R4          ; on appelle int4 à nouveau, donc V()
+
+# Fin zone intéressante #
+
+SETRI R9 2        ; on stocke la valeur 2 dans R9, correspond à int2
+CLINT R9          ; on appelle int2, ce qui termine le processus
+
+# @ à réserver        : @11 - @20
+# valeurs à stocker   :  1  -  10
+
+# @ réservée          : @10
+# valeur stockée      : 65
+
+R7 <- @dresses
+R8 <- valeurs
+
+Idée : introduire une boucle pour incrémenter les adresses + valeurs
+------
+
+Il faut alors commencer avec R7 <- @11 et
+                             R8 <-  1
+
+Compteur       : R10
+Incrémentation : ADDRG x2 (R7, R8)
+Décrémentation : SUBRG (R10)
+Boucle         : JNZRI (R10 != 0), boucler
+
+Reprise de la zone intéressante :
+---------------------------------
+
+SETRI R5 10       ;LNR on stocke la valeur 10 (qui sera une @) dans R5, correspond à l'@ de la mémoire partagée
+SETRI R4 4        ;LNR on stocke la valeur 4 dans R4, correspond à l'int4
+SETRI R6 65       ;LNR on stocke la valeur 65 dans R6, correspond à la valeur à écrire dans la mémoire partagée
+SETRI R3 215      ;LNR on stocke la valeur 215 (qui sera une @, celle de P()) dans R3
+CLINT R4          ;LNR on appelle int4, donc P()
+
+STSHM R5 R6       ;LNR on stocke la valeur 65 à R5, donc à l'@10 de la mémoire partagée    ## <- intervention mémoire partagée (stockage) ##
+
+SETRI R3 225      ;LNR on stocke la valeur 225 (qui sera une @, celle de V()) dans R3
+CLINT R4          ;LNR on appelle int4 à nouveau, donc V()
+
+# Ajout de valeurs dans la mémoire partagée
+
+SETRI R10 10      ;LNR compteur initialisé à 10
+SETRI R7 11       ;LNR première @ (de la mem partagée) stockée dans R7
+SETRI R8 1        ;LNR première valeur à écrire, stockée dans R8
+SETRI R3 215      ;LNR=$boucle on stocke la valeur 215 (qui sera une @, celle de P()) dans R3
+CLINT R4          ;LNR on appelle int4, donc P()
+
+STSHM R8 R7       ;LNR on stocke la première valeur (1) dans la première @ (11)
+
+SETRI R3 225      ;LNR on stocke la valeur 225 (qui sera une @, celle de V()) dans R3
+CLINT R4          ;LNR on appelle int4 à nouveau, donc V()
+ADDRG R7 R7 R2    ;LNR on incrémente les @ (R7 <- 11+1)
+ADDRG R8 R8 R2    ;LNR on incrémente les valeurs (R8 <- 1+1)
+SUBRG R10 R2      ;LNR on décrémente le compteur
+JNZRI R10 $boucle ;LNR si R10 != 0, on boucle
+SETRI R9 2        ;LNR on stocke la valeur 2 dans R9, correspond à int2
+CLINT R9          ;LNR on appelle int2, ce qui termine le processus
+
+# Les valeurs des @ de P() et V() doivent peut-être changer pour marquer le fait qu'on utilise 2 sémaphores...
+ 
+################
+# Consommateur #
+################
+
 Question 3d
 ===========
 
