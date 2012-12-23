@@ -157,7 +157,12 @@ JMBSI $int1        ;LNR on retourne à int1
 Question 3c
 ===========
 
+On voit bien que Proc_1_Program.asm est le consommateur, tandis que Proc_2_Program.asm est le producteur.
+En effet, ce dernier stocke une valeur dans la mémoire partagée. Cette valeur est ensuite récupérée et utilisée par Proc_1_Program.asm
 
+Pour répondre à la question, il faut donc :
+    -> Ecrire les valeurs de 1 à 10 (de @11 à @20) dans la mémoire partagée via Proc_2_Program.asm
+    -> Les lire en écrivant un nombre à la fois dans la zone critique via Proc_1_Program.asm
 
 Question 3d
 ===========

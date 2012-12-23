@@ -36,7 +36,7 @@ CLINT R9          ; kernel int2 exits the process                             //
 # SETRI R6 65       ; on stocke la valeur 65 dans R6, correspond à la valeur à écrire dans la mémoire partagée
 # SETRI R3 215      ; on stocke la valeur 215 (qui sera une @, celle de P()) dans R3
 # CLINT R4          ; on appelle int4, donc P()
-# STSHM R5 R6       ; on stocke la valeur 65 à R5, donc à l'@10 de la mémoire partagée
+# STSHM R5 R6       ; on stocke la valeur 65 à R5, donc à l'@10 de la mémoire partagée    ## <- intervention mémoire partagée (stockage)##
 # SETRI R3 225      ; on stocke la valeur 225 (qui sera une @, celle de V()) dans R3
 # CLINT R4          ; on appelle int4 à nouveau, donc V()
 # SETRI R9 2        ; on stocke la valeur 2 dans R9, correspond à int2
