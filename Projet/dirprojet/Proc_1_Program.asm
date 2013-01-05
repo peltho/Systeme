@@ -30,61 +30,61 @@ CLINT R9          ; kernel int2 exits the process                            // 
 
 # Commentaires français
 
-                # SETRI R0 0        ; on récupère la semaphore
-                # SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond à la fois le code de P() et le nombre de semops
-                # SETRI R3 210      ; on stocke la valeur 210 (qui sera une @) dans R3
-                # STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@210
-                # ADDRG R3 R3 R2    ; on stocke la valeur 210+1=211 (qui sera une @) dans R3
-                # STMEM R3 R2       ; on stocke la valeur 1 à R3, donc à l'@211
-                # SETRI R3 220      ; on stocke la valeur 220 (qui sera une @) dans R3
-                # STMEM R3 R0       ; on stocke la valeur 0 à R3 donc à l'@220
-                # ADDRG R3 R3 R2    ; on stocke la valeur 220+1=221 (qui sera une @) dans R3
-                # STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@221
-                # SETRI R5 10       ; on stocke la valeur 10 (@ de la mémoire partagée) dans R5
-                # SETRI R4 4        ; on stocke la valeur 4 dans R4, correspond à int4
-                # SETRI R3 210      ; on stocke la valeur 210 (qui sera une @, pour la semop P()) dans R3
-#              /# CLINT R4          ; on appelle int4, donc P()
-#     Zone    / # LDSHM R5 R6       ; on charge la valeur de la mémoire partagée dans R6, donc R6 = 65 (valeur de l'@10 de la mémoire partagée) ## <- intervention mémoire partagée (chargement) ##
-#   Critique  \ # SETRI R3 220      ; on stocke la valeur 220 (qui sera une @, pour la semop V()) dans R3
-#              \# CLINT R4          ; on appelle int4 à nouveau, donc V()
-                # JZROI R6 -6       ; si R6=0, alors on boucle à la ligne 45 (pour pouvoir rentrer à nouveau en zone critique) le -6, signifie retour de 6 lignes en arrière, cette ligne incluse.
-                # SETRI R3 300      ; on stocke la valeur 300 (qui sera une @, CONSOLEI/OTRIGGER) dans R3
-                # STMEM R3 R6       ; on stocke la valeur de la mémoire partagée (65) à R3, donc à l'@300                                       ## <- intervention mémoire partagée ##
-                # SETRI R4 380      ; on stocke la valeur 380 (qui sera une @) dans R4
-                # SETRI R1 1        ; on stocke la valeur 1 dans R1, correspond au type de l'item (char en l'occurrence)
-                # STMEM R4 R1       ; on stocke la valeur 1 à R4, donc le type à l'@380
-                # SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond au nombre d'items (1 seul)
-                # SETRI R0 5        ; on stocke la valeur 5 dans R0, correspond à la valeur de l'interruption : int5
-                # CLINT R0          ; on appelle int5
-                # SETRI R9 2        ; on stocke la valeur 2 dans R9, correspond à la valeur de l'interruption : int2
-                # CLINT R9          ; on appelle int2
+# SETRI R0 0        ; on récupère la semaphore
+# SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond à la fois le code de P() et le nombre de semops
+# SETRI R3 210      ; on stocke la valeur 210 (qui sera une @) dans R3
+# STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@210
+# ADDRG R3 R3 R2    ; on stocke la valeur 210+1=211 (qui sera une @) dans R3
+# STMEM R3 R2       ; on stocke la valeur 1 à R3, donc à l'@211
+# SETRI R3 220      ; on stocke la valeur 220 (qui sera une @) dans R3
+# STMEM R3 R0       ; on stocke la valeur 0 à R3 donc à l'@220
+# ADDRG R3 R3 R2    ; on stocke la valeur 220+1=221 (qui sera une @) dans R3
+# STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@221
+# SETRI R5 10       ; on stocke la valeur 10 (@ de la mémoire partagée) dans R5
+# SETRI R4 4        ; on stocke la valeur 4 dans R4, correspond à int4
+# SETRI R3 210      ; on stocke la valeur 210 (qui sera une @, pour la semop P()) dans R3
+# CLINT R4          ; on appelle int4, donc P()
+# LDSHM R5 R6       ; on charge la valeur de la mémoire partagée dans R6, donc R6 = 65 (valeur de l'@10 de la mémoire partagée) ## <- intervention mémoire partagée (chargement) ##
+# SETRI R3 220      ; on stocke la valeur 220 (qui sera une @, pour la semop V()) dans R3
+# CLINT R4          ; on appelle int4 à nouveau, donc V()
+# JZROI R6 -6       ; si R6=0, alors on boucle à la ligne 45 (pour pouvoir rentrer à nouveau en zone critique) le -6, signifie retour de 6 lignes en arrière, cette ligne incluse.
+# SETRI R3 300      ; on stocke la valeur 300 (qui sera une @, CONSOLEI/OTRIGGER) dans R3
+# STMEM R3 R6       ; on stocke la valeur de la mémoire partagée (65) à R3, donc à l'@300                                       ## <- intervention mémoire partagée ##
+# SETRI R4 380      ; on stocke la valeur 380 (qui sera une @) dans R4
+# SETRI R1 1        ; on stocke la valeur 1 dans R1, correspond au type de l'item (char en l'occurrence)
+# STMEM R4 R1       ; on stocke la valeur 1 à R4, donc le type à l'@380
+# SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond au nombre d'items (1 seul)
+# SETRI R0 5        ; on stocke la valeur 5 dans R0, correspond à la valeur de l'interruption : int5
+# CLINT R0          ; on appelle int5
+# SETRI R9 2        ; on stocke la valeur 2 dans R9, correspond à la valeur de l'interruption : int2
+# CLINT R9          ; on appelle int2
 
-SETRI R0 0        ; on récupère le semaphore
-SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond à la fois le code de P() et le nombre de semops
-SETRI R3 210      ; on stocke la valeur 210 (qui sera une @) dans R3
-STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@210
-ADDRG R3 R3 R2    ; on stocke la valeur 210+1=211 (qui sera une @) dans R3
-STMEM R3 R2       ; on stocke la valeur 1 à R3, donc à l'@211
-SETRI R3 220      ; on stocke la valeur 220 (qui sera une @) dans R3
-STMEM R3 R0       ; on stocke la valeur 0 à R3 donc à l'@220
-ADDRG R3 R3 R2    ; on stocke la valeur 220+1=221 (qui sera une @) dans R3
-STMEM R3 R0       ; on stocke la valeur 0 à R3, donc à l'@221
-SETRI R5 10       ; on stocke la valeur 10 (@ de la mémoire partagée) dans R5
-SETRI R4 4        ; on stocke la valeur 4 dans R4, correspond à int4
-SETRI R3 210      ; on stocke la valeur 210 (qui sera une @, pour la semop P()) dans R3
-CLINT R4          ; on appelle int4, donc P()
-LDSHM R5 R6       ; on charge la valeur de la mémoire partagée dans R6, donc R6 = 65 (au début, valeur de l'@10 de la mémoire partagée)
-SETRI R3 220      ; on stocke la valeur 220 (qui sera une @, pour la semop V()) dans R3
-CLINT R4          ; on appelle int4 à nouveau, donc V()
-ADDRG R5 R5 R2    ; on incrémente la valeur de R5 (qui contient les @ de la mémoire partagée)
-JZROI R6 -7       ; si R6=0, alors on boucle (pour pouvoir rentrer à nouveau en zone critique) le -7, signifie retour de 7 lignes en arrière, cette ligne incluse.
-SETRI R3 300      ; on stocke la valeur 300 (qui sera une @, CONSOLEI/OTRIGGER) dans R3
-STMEM R3 R6       ; on stocke la valeur de la mémoire partagée (65) à R3, donc à l'@300
-SETRI R4 380      ; on stocke la valeur 380 (qui sera une @) dans R4
-SETRI R1 1        ; on stocke la valeur 1 dans R1, correspond au type de l'item (char en l'occurrence)
-STMEM R4 R1       ; on stocke la valeur 1 à R4, donc le type à l'@380
-SETRI R2 1        ; on stocke la valeur 1 dans R2, correspond au nombre d'items (1 seul)
-SETRI R0 5        ; on stocke la valeur 5 dans R0, correspond à la valeur de l'interruption : int5
-CLINT R0          ; on appelle int5
-SETRI R9 2        ; on stocke la valeur 2 dans R9, correspond à la valeur de l'interruption : int2
-CLINT R9          ; on appelle int2
+SETRI R0 0        ;LNR on récupère le semaphore
+SETRI R2 1        ;LNR on stocke la valeur 1 dans R2, correspond à la fois le code de P() et le nombre de semops
+SETRI R3 210      ;LNR on stocke la valeur 210 (qui sera une @) dans R3
+STMEM R3 R0       ;LNR on stocke la valeur 0 à R3, donc à l'@210
+ADDRG R3 R3 R2    ;LNR on stocke la valeur 210+1=211 (qui sera une @) dans R3
+STMEM R3 R2       ;LNR on stocke la valeur 1 à R3, donc à l'@211
+SETRI R3 220      ;LNR on stocke la valeur 220 (qui sera une @) dans R3
+STMEM R3 R0       ;LNR on stocke la valeur 0 à R3 donc à l'@220
+ADDRG R3 R3 R2    ;LNR on stocke la valeur 220+1=221 (qui sera une @) dans R3
+STMEM R3 R0       ;LNR on stocke la valeur 0 à R3, donc à l'@221
+SETRI R5 10       ;LNR on stocke la valeur 10 (@ de la mémoire partagée) dans R5
+SETRI R4 4        ;LNR on stocke la valeur 4 dans R4, correspond à int4
+SETRI R3 210      ;LNR on stocke la valeur 210 (qui sera une @, pour la semop P()) dans R3
+CLINT R4          ;LNR on appelle int4, donc P()
+LDSHM R5 R6       ;LNR on charge la valeur de la mémoire partagée dans R6, donc R6 = 65 (au début, valeur de l'@10 de la mémoire partagée)
+SETRI R3 220      ;LNR on stocke la valeur 220 (qui sera une @, pour la semop V()) dans R3
+CLINT R4          ;LNR on appelle int4 à nouveau, donc V()
+ADDRG R5 R5 R2    ;LNR on incrémente la valeur de R5 (qui contient les @ de la mémoire partagée)
+JZROI R6 -7       ;LNR si R6=0, alors on boucle (pour pouvoir rentrer à nouveau en zone critique) le -7, signifie retour de 7 lignes en arrière, cette ligne incluse.
+SETRI R3 300      ;LNR on stocke la valeur 300 (qui sera une @, CONSOLEI/OTRIGGER) dans R3
+STMEM R3 R6       ;LNR on stocke la valeur de la mémoire partagée (65) à R3, donc à l'@300
+SETRI R4 380      ;LNR on stocke la valeur 380 (qui sera une @) dans R4
+SETRI R1 1        ;LNR on stocke la valeur 1 dans R1, correspond au type de l'item (char en l'occurrence)
+STMEM R4 R1       ;LNR on stocke la valeur 1 à R4, donc le type à l'@380
+SETRI R2 1        ;LNR on stocke la valeur 1 dans R2, correspond au nombre d'items (1 seul)
+SETRI R0 5        ;LNR on stocke la valeur 5 dans R0, correspond à la valeur de l'interruption : int5
+CLINT R0          ;LNR on appelle int5
+SETRI R9 2        ;LNR on stocke la valeur 2 dans R9, correspond à la valeur de l'interruption : int2
+CLINT R9          ;LNR on appelle int2
