@@ -114,7 +114,7 @@ LDPSW R0           ;LNR go on to execute proc of id R0  , @@end of interrupt #4@
 # R2 contains the number of items to write
 # R3 contains the start address in process memory where to read the items one by one
 # R4 contains the start address in process memory where to read the item types one by one (0 for int, 1 for char)
-SETRI R0 0         ;LNR=$int5: consoleOut request for current process, the address where its pid is stored
+/*SETRI R0 0         ;LNR=$int5: consoleOut request for current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting the consoleOut operation
 SETRI R6 20        ;LNR offset to get the process slot address from the process id
 ADDRG R0 R1 R6     ;LNR R0 now contains the process slot address
@@ -136,21 +136,59 @@ STMEM R7 R8        ;LNR now effectively preparing the type vect start address "p
 SETRI R7 300       ;LNR The address in kernel memory where, by writing a value of 1, we trigger the consoleOut
 STMEM R7 R5        ;LNR there we go -- we just requested a "hardware consoleOut" through "memory-mapping IO"
 JMBSI $int1        ;LNR we are done, so we make an absolute jump to $int1: to keep going , @@end of interrupt #5@@
-#-------- start of $int6 ----------------------------
-SETRI R0 0         ;LNR=$int6: consoleIn request for current process, the address where its pid is stored
-LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting the consoleIn operation
+*/
+SETRI R0 0         ;LNR=$int5: consoleOut request for current process, the address where its pid is stored
+LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting the consoleOut operation
 SETRI R6 20        ;LNR offset to get the process slot address from the process id
 ADDRG R0 R1 R6     ;LNR R0 now contains the process slot address
 SETRI R5 1         ;LNR the readyToRun state
 STMEM R0 R5        ;LNR store the readyToRun state for the current process
-# ......
-SETRI R9 0         ; on stocke la valeur 0 (qui déclenchera un consoleInOut.input() en temps voulu)
-
-# ...
-
-SETRI R7 300       ; on stocke la valeur 300 (qui sera une @) dans R7
-STMEM R7 R9        ; on stocke la valeur 0 à R7, donc à l'@300 ce qui déclenche un consoleInOut.input()
-JMBSI $int1        ; on retourne à int1
+SETRI R7 301       ;LNR=$boucle on stocke la valeur 301 (qui sera une @) dans R7 (début boucle)
+STMEM R7 R2        ;LNR on stocke la valeur R2 à R7, donc à l'@301, correspond au nombre d'items
+LDPRM R1 R3 R6     ;LNR on charge R3 (@ du premier item) du processus R1 dans R6
+SETRI R8 304       ;LNR on stocke la valeur 304 (qui sera une @, qui contiendra la valeur de l'item) dans R8
+STMEM R8 R6        ;LNR on stocke la valeur de l'item à R6, donc à l'@304
+SETRI R7 302       ;LNR on stocke la valeur 302 (qui sera une @, qui contiendra l'@ de l'item) dans R7
+STMEM R7 R8        ;LNR on stocke la valeur 304 à R7, donc à l'@302
+LDPRM R1 R4 R7     ;LNR on charge R4 (@ du type de l'item) du processus R1 pour récupérer la valeur du type (0:int/1:char) qu'on stocke dans R7
+SETRI R8 404       ;LNR on stocke la valeur 404 (qui sera une @, qui contiendra l'@ du type de l'item) dans R8
+STMEM R8 R7        ;LNR on stocke le type de l'item à R8, donc à l'@404
+SETRI R7 303       ;LNR on stocke la valeur 303 (qui sera une @, qui contiendra l'@ du type de l'item) dans R7
+STMEM R7 R8        ;LNR on stocke l'@ du type de l'item à R7, donc à l'@303
+SETRI R7 300       ;LNR on stocke la valeur 300 (qui sera une @) dans R7
+STMEM R7 R5        ;LNR on stocke la valeur 1 à R7, donc à l'@300, ce qui déclenche un consoleInOut.output()
+ADDRG R3 R3 R5     ;LNR on incrémente R3 pour obtenir l'@ du deuxième item
+ADDRG R4 R4 R5     ;LNR on incrémente R4 pour obtenir l'@ du type du deuxième item
+SUBRG R9 R2 R5     ;LNR on décrémente le nombre d'items : R9 <- #items - 1
+JNZRI R9 $boucle   ;LNR on boucle si R9 (nombre d'items) != 0
+JMBSI $int1        ;LNR on retourne à int1
+#-------- start of $int6 ----------------------------
+SETRI R0 0         ;LNR=$int5: consoleOut request for current process, the address where its pid is stored
+LDMEM R0 R1        ;LNR R1 now has the pid of the process which is requesting the consoleOut operation
+SETRI R6 20        ;LNR offset to get the process slot address from the process id
+ADDRG R0 R1 R6     ;LNR R0 now contains the process slot address
+SETRI R5 1         ;LNR the readyToRun state
+STMEM R0 R5        ;LNR store the readyToRun state for the current process
+SETRI R9 0         ;LNR on stocke la valeur 0 (qui déclenchera input()) dans R
+SETRI R7 301       ;LNR=$boucle on stocke la valeur 301 (qui sera une @) dans R7 (début boucle)
+STMEM R7 R2        ;LNR on stocke la valeur R2 à R7, donc à l'@301, correspond au nombre d'items
+LDPRM R1 R3 R6     ;LNR on charge R3 (@ du premier item) du processus R1 dans R6
+SETRI R8 304       ;LNR on stocke la valeur 304 (qui sera une @, qui contiendra la valeur de l'item) dans R8
+STMEM R8 R6        ;LNR on stocke la valeur de l'item à R6, donc à l'@304
+SETRI R7 302       ;LNR on stocke la valeur 302 (qui sera une @, qui contiendra l'@ de l'item) dans R7
+STMEM R7 R8        ;LNR on stocke la valeur 304 à R7, donc à l'@302
+LDPRM R1 R4 R7     ;LNR on charge R4 (@ du type de l'item) du processus R1 pour récupérer la valeur du type (0:int/1:char) qu'on stocke dans R7
+SETRI R8 404       ;LNR on stocke la valeur 404 (qui sera une @, qui contiendra l'@ du type de l'item) dans R8
+STMEM R8 R7        ;LNR on stocke le type de l'item à R8, donc à l'@404
+SETRI R7 303       ;LNR on stocke la valeur 303 (qui sera une @, qui contiendra l'@ du type de l'item) dans R7
+STMEM R7 R8        ;LNR on stocke l'@ du type de l'item à R7, donc à l'@303
+SETRI R7 300       ;LNR on stocke la valeur 300 (qui sera une @) dans R7
+STMEM R7 R9        ;LNR on stocke la valeur 0 à R7, donc à l'@300 ce qui déclenche un consoleInOut.input()
+ADDRG R3 R3 R5     ;LNR on incrémente R3 pour obtenir l'@ du deuxième item
+ADDRG R4 R4 R5     ;LNR on incrémente R4 pour obtenir l'@ du type du deuxième item
+SUBRG R9 R2 R5     ;LNR on décrémente le nombre d'items : R9 <- #items - 1
+JNZRI R9 $boucle   ;LNR on boucle si R9 (nombre d'items) != 0
+JMBSI $int1        ;LNR on retourne à int1
 #======== start of initial kernel setup =============
 SETRI R0 1         ;LNR=$prep: initial kernel setup, R0 constant increment/decrement value
 SETRI R1 1         ;LNR address of first slot in the interrupt vector
