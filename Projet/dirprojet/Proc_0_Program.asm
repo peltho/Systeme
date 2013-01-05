@@ -152,7 +152,7 @@ GETI0 R3            ;150 number of processes
 SETRI R8 20         ;151 address to save the number of processes
 STMEM R8 R3         ;152 saving the number of processes
 ADDRG R9 R8 R0      ;153 offset for the semwaitlists
-SETRI R10 200       ;154 the start of the proc sem waitlists address vect, one for each proc, (count,(semId,semOp),(semId,semOp),...)
+SETRI R10 201       ;154 the start of the proc sem waitlists address vect, one for each proc, (count,(semId,semOp),(semId,semOp),...)
 ADDRG R7 R10 R8     ;155 the first such address 
 STMEM R1 R2         ;156=$procSetup: set initial process state value to current slot
 ADDRG R1 R1 R0      ;157 advance address for process table slot
