@@ -1,57 +1,57 @@
-JMBSI $prep        ;LNR  absolute jump to $prep: to prepare the memory structure (intvec, proc/file tables)
+JMBSI $prep        ;LNR on passe à $prep: pour préparer la structure de la mémoire (vecteur d'interruptions, proc/file tables)
 #-------- start of $int1 ----------------------------
-SETRI R1 0         ;LNR=$int1: address where the current proc id is stored
-LDMEM R1 R0        ;LNR get the last scheduled process id, to start from right after it (round robin)
-SETRI R2 1         ;LNR the increment for process table slots
-ADDRG R0 R0 R2     ;LNR the next process id to study, or one past the last (then we are going to wrap around)
-SETRI R11 20       ;LNR the address where the number of processes is stored
-LDMEM R11 R1       ;LNR R1 now contains the number of processes
-SETRG R9 R1        ;LNR save R1 into R9, so R9 now also contains the number of processes -- constant
-ADDRG R9 R9 R2     ;LNR actually make R9 one larger because proc id are from 1 to R1 , R9 is constant, needed for the wrap around test
-SETRI R3 1         ;LNR the ReadyToRun process state value (proc states: 0(exit), 1(ready), 2(running), 3(semwait), 4(netwait)...)
-SETRI R4 3         ;LNR the SemWait process state value (proc states: 0(exit), 1(ready), 2(running), 3(semwait), 4(netwait)...)
-SETRI R15 100      ;LNR the start address of the semaphore vector (where we keep the semaphore state values)
-SETRI R6 0         ;LNR for now 'no', we did not find any non-exited process yet
-SETRG R7 R0        ;LNR=$top: copy R0 for the test for the wrap around
+SETRI R1 0         ;LNR=$int1: adresse où l'ID du processus courant est stocké
+LDMEM R1 R0        ;LNR on charge l'ID du dernier processus prévu
+SETRI R2 1         ;LNR l'incrémentation pour la table des processus
+ADDRG R0 R0 R2     ;LNR le prochain ID de processus à étudier
+SETRI R11 20       ;LNR on stocke le nombre de processus à l'@20 (3 processus)
+LDMEM R11 R1       ;LNR on charge le nombre de processus dans R1
+SETRG R9 R1        ;LNR on sauve R1 dans R9 qui contient alors le nombre de processus
+ADDRG R9 R9 R2     ;LNR on incrémente le nombre de processus de 1 car les ID de processus commencent à 1
+SETRI R3 1         ;LNR on stocke l'état ReadyToRun dans R3 (différents états: 0(exit), 1(ready), 2(running), 3(semwait), 4(netwait)...)
+SETRI R4 3         ;LNR on stocke l'état SemWait dans R4
+SETRI R15 100      ;LNR on stocke l'@ de départ du vecteur de sémaphores (où l'on garde l'état des sémaphores)
+SETRI R6 0         ;LNR jusqu'à maintenant, on a pas encore de processus terminé
+SETRG R7 R0        ;LNR=$top: on copie R0 pour le test du wrap around
 SUBRG R7 R7 R9     ;LNR prepare the test for R0 wrap around
-JNZRI R7 $nextPid  ;LNR if R7 (that is R0) is not equal to R9 (the number of processes) we can continue
-SETRI R0 1         ;LNR otherwise, we need to set R0 to 1 to wrap around (pid zero is for the kernel)
-SETRG R10 R11      ;LNR=$nextPid: prepare the offset for the process table start address
-ADDRG R10 R10 R0   ;LNR now R10 contains the address of the current process slot in the process table
-SETRI R14 200      ;LNR the start of the proc sem waitlists address vect, one list for each proc, (count,(semId,semOp),(semId,semOp),...)
-ADDRG R14 R14 R0   ;LNR the address of the start of the proc sem waitlists address vect for the current process
-LDMEM R10 R8       ;LNR get the state of the current process (address in R10) into R8
-JZROI R8 $nextproc ;LNR this process is exited, we jump to $nextproc:
-SETRI R6 1         ;LNR yes, we found at least one non-exited process
-SETRG R12 R8       ;LNR save R8 into R12, we need the state once again
-SUBRG R8 R8 R3     ;LNR prepare the test whether this process is in the ready state
-JZROI R8 $startproc ;LNR jump to $startproc: for id R0 and process table address R10, since it is indeed ready
-SUBRG R12 R12 R4   ;LNR prepare the test whether this process is in semwait
-JNZRI R12 $nextproc ;LNR jump to $nextproc: since the proc of id R0 is not in semwait
-SETRI R13 0        ;LNR ok, this proc is in semwait, preparing for semoptest(0): we are first only testing
-SETRI R5 1         ;LNR the frame width for the subroutine call
-SETRI R16 $semoptest ;LNR the address of the start of the $semoptest sub
-CLLSB R5 R16       ;LNR call to $semoptest(R13=0, R14=current proc semlist address, R15=semvect addr)
-JZROI R16 $nextproc ;LNR  because it means we still cannot apply the semops this proc was waiting for
-SETRI R13 1        ;LNR ok, ready to apply them
-SETRI R5 1         ;LNR the frame width for the subroutine call
-SETRI R16 $semoptest ;LNR the address of the start of the $semoptest sub
-CLLSB R5 R16       ;LNR call to $semoptest(R13=1, R14=current proc semlist address, R15=semvect addr)
-JZROI R16 $crash   ;LNR this should never ever happen
-JMTOI $startproc   ;LNR jump to $startproc: we are now done with all the semaphore operations, and can complete the election of process of pid R0
-ADDRG R0 R0 R2     ;LNR=$nextproc: increment the pid for the next process to study
-SUBRG R1 R1 R2     ;LNR decrement loop counter
-JNZRI R1  $top     ;LNR jump to $top: loop for max number processes
-JNZRI R6 $wait     ;LNR no ready proc but at least one not exited, so we go to $wait:
-SDOWN              ;LNR all processes have exited, we're done, system going down
-INTRP              ;LNR we allow interrupts (which were disabled by the call to this interrupt)
-NOPER              ;LNR=$wait: a bit for some interrupt (e.g. net I/O complete), which then jumps right there
-JMBSI $wait        ;LNR and we loop back to $wait: in order to wait some more
-SETRI R3 2         ;LNR=$startproc: the Running state, for the ready process which we just found
-STMEM R10 R3       ;LNR change the process state to running (address in R0)
-SETRI R1 0         ;LNR address where the current proc id is stored
-STMEM R1 R0        ;LNR store the (newly become) current proc id
-LDPSW R0           ;LNR go on to execute proc of id R0    , @@end of interrupt #1@@
+JNZRI R7 $nextPid  ;LNR si R7 (donc R0) est différent de R9 (nombre de processus), on peut continuer
+SETRI R0 1         ;LNR sinon, on doit mettre R0 à 1 pour le wrap around
+SETRG R10 R11      ;LNR=$nextPid: on prépare l'@ de la table des processus
+ADDRG R10 R10 R0   ;LNR R10 contient l'@ du processus courant dans la table des processus
+SETRI R14 200      ;LNR on stocke l'@ de début du vecteur des listes d'attente des processus dans R14, une liste pour chaque processus, (count,(semId,semOp),(semId,semOp),...)
+ADDRG R14 R14 R0   ;LNR on stocke l'@ de début de ce même vecteur pour le processus courant
+LDMEM R10 R8       ;LNR on charge l'état du processus courant (de R10) dans R8
+JZROI R8 $nextproc ;LNR on termine le processus et on passe à $nextproc:
+SETRI R6 1         ;LNR on trouve finalement un processus non terminé
+SETRG R12 R8       ;LNR on sauve R8 dans R12, on récupère l'état qu'on avait dans R8 qu'on stocke à présent dans R12
+SUBRG R8 R8 R3     ;LNR on prepare le test si le processus est prêt
+JZROI R8 $startproc ;LNR on passe à $startproc: pour l'ID R0 et l'@ de la table des processus R10, si c'est prêt
+SUBRG R12 R12 R4   ;LNR on prepare le test si le processus est où non dans l'état semwait
+JNZRI R12 $nextproc ;LNR on passe à $nextproc: puisque le processus dID R0 n'est pas dans l'état semwait
+SETRI R13 0        ;LNR le processus est dans l'état semwait, on le prépare pour semoptest(0)
+SETRI R5 1         ;LNR on stocke la taille pour l'appel de la fonction
+SETRI R16 $semoptest ;LNR l'@ de début de la fonction $semoptest
+CLLSB R5 R16       ;LNR on apelle $semoptest(R13=0, R14=@ de semlist du processus courant, R15=@semvect)
+JZROI R16 $nextproc ;LNR on passe au processus suivant car on ne peut tjs pas appliquer les semops attendus par ce processus
+SETRI R13 1        ;LNR on peut désormais les appliquer
+SETRI R5 1         ;LNR on stocke la taille pour l'appel de la fonction
+SETRI R16 $semoptest ;LNR l'@ de début de la fonction $semoptest
+CLLSB R5 R16       ;LNR on apelle $semoptest(R13=1, R14=@ de semlist du processus courant, R15=@semvect)
+JZROI R16 $crash   ;LNR on ne devrait jamais arriver ici
+JMTOI $startproc   ;LNR on passe à $startproc: on a fait toutes les opérations sur semaphores, et on peut élire le processus 0
+ADDRG R0 R0 R2     ;LNR=$nextproc: on incrémente le PID pour étudier le prochain processus
+SUBRG R1 R1 R2     ;LNR on décrémente le compteur de boucle
+JNZRI R1  $top     ;LNR on boucle à $top: boucle pour le nombre maximum de processus
+JNZRI R6 $wait     ;LNR aucun processus prêt mais au moins un non terminé, donc on attend avec $wait:
+SDOWN              ;LNR tous les processus sont terminés, on éteint tout
+INTRP              ;LNR on accepte les interruptions (qui étaient désactivées)
+NOPER              ;LNR=$wait: on attend un peu pour les interruptions
+JMBSI $wait        ;LNR puis on boucle à $wait: pour attendre un peu plus
+SETRI R3 2         ;LNR=$startproc: l'état running, pour le processus qu'on vient de trouver et qui est prêt
+STMEM R10 R3       ;LNR on change l'état du processus à running (@ dans R0)
+SETRI R1 0         ;LNR @ où l'ID du processus courant est stocké
+STMEM R1 R0        ;LNR on stocke le nouvel ID du processus courant
+LDPSW R0           ;LNR on exécute le processus d'ID R0
 #-------- start of $int2 ----------------------------
 SETRI R0 0         ;LNR=$int2: exit current process, the address where its pid is stored
 LDMEM R0 R1        ;LNR R1 now has the pid of the process which is now exiting
